@@ -1,4 +1,4 @@
-function JobCard({ job }) {
+function JobCard({ job, onSave, isSaved }) {
   const date = new Date(job.date).toLocaleDateString("en-GB", {
     day: "numeric",
     month: "short",
@@ -24,6 +24,13 @@ function JobCard({ job }) {
         >
           Apply
         </a>
+        <button
+          onClick={() => onSave(job)}
+          disabled={isSaved}
+          className="rounded border border-blue-600 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-50 disabled:border-gray-300 disabled:text-gray-400"
+        >
+          {isSaved ? "Saved ✓" : "Save to Tracker"}
+        </button>
       </div>
     </div>
   );

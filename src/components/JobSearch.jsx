@@ -12,7 +12,7 @@ const CATEGORIES = [
   { label: "Customer Support", value: "customer-support" },
 ];
 
-function JobSearch() {
+function JobSearch({ onSave, savedIds }) {
   const [keyword, setKeyword] = useState("");
   const [category, setCategory] = useState("");
   const [jobs, setJobs] = useState([]);
@@ -97,7 +97,15 @@ function JobSearch() {
       )}
 
       <div className="grid gap-4 md:grid-cols-2">
-        {!loading && jobs.map((job) => <JobCard key={job.id} job={job} />)}
+        {!loading &&
+          jobs.map((job) => (
+            <JobCard
+              key={job.id}
+              job={job}
+              onSave={onSave}
+              isSaved={savedIds.includes(job.id)}
+            />
+          ))}
       </div>
     </div>
   );

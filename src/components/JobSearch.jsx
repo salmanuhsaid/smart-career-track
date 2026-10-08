@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchRemotiveJobs } from "../services/jobApi";
+import { fetchJobs } from "../services/jobApi";
 import JobCard from "./JobCard";
 
 const CATEGORIES = [
@@ -18,17 +18,19 @@ function JobSearch({ onSave, savedIds }) {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [source, setSource] = useState("Remotive");
 
   async function handleSearch() {
     setLoading(true);
     setError("");
     try {
-      const results = await fetchRemotiveJobs(keyword, category);
-      setJobs(results);
+      const result = await fetchJobs(keyword, category);
+      setJobs(result.jobs);
+      setSource(result.source);
     } catch (err) {
       console.error(err);
       setError(
-        "Could not load jobs. Check your internet connection and try again.",
+        "Could not load jobs from any source. Check your internet connection and try again.",
       );
       setJobs([]);
     } finally {
@@ -77,6 +79,13 @@ function JobSearch({ onSave, savedIds }) {
           Search
         </button>
       </form>
+
+      {!loading && !error && source === "Jobicy" && (
+        <p className="mb-3 rounded bg-yellow-50 p-2 text-sm text-yellow-800">
+          Remotive is unavailable, showing results from the backup source
+          (Jobicy).
+        </p>
+      )}
 
       {loading && <p className="text-gray-500">Loading jobs...</p>}
 

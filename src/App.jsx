@@ -3,6 +3,7 @@ import useLocalStorage from "./hooks/useLocalStorage";
 import JobSearch from "./components/JobSearch";
 import TrackerBoard from "./components/TrackerBoard";
 import ApplicationModal from "./components/ApplicationModal";
+import Stats from "./components/Stats";
 
 function App() {
   const [tab, setTab] = useState("search");
@@ -102,12 +103,15 @@ function App() {
         </div>
 
         {tab === "tracker" && (
-          <TrackerBoard
-            applications={applications}
-            onMove={moveApplication}
-            onDelete={deleteApplication}
-            onEdit={(app) => setModal(app)}
-          />
+          <>
+            <Stats applications={applications} />
+            <TrackerBoard
+              applications={applications}
+              onMove={moveApplication}
+              onDelete={deleteApplication}
+              onEdit={(app) => setModal(app)}
+            />
+          </>
         )}
       </main>
 

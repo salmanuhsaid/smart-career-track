@@ -1,10 +1,11 @@
 const STATUSES = ["Saved", "Applied", "Interviewing", "Offer", "Rejected"];
 
-function TrackerBoard({ applications, onMove, onDelete }) {
+function TrackerBoard({ applications, onMove, onDelete, onEdit }) {
   if (applications.length === 0) {
     return (
       <p className="text-gray-500">
-        No applications yet. Save a job from the Job Search tab.
+        No applications yet. Save a job from the Job Search tab or click "+ Add
+        application".
       </p>
     );
   }
@@ -26,6 +27,16 @@ function TrackerBoard({ applications, onMove, onDelete }) {
                 >
                   <p className="font-medium text-gray-900">{app.title}</p>
                   <p className="text-sm text-gray-600">{app.company}</p>
+                  {app.salary && (
+                    <p className="mt-1 text-xs text-green-700">
+                      💰 {app.salary}
+                    </p>
+                  )}
+                  {app.notes && (
+                    <p className="mt-1 line-clamp-3 text-xs text-gray-500">
+                      📝 {app.notes}
+                    </p>
+                  )}
                   <select
                     value={app.status}
                     onChange={(e) => onMove(app.id, e.target.value)}
@@ -37,12 +48,20 @@ function TrackerBoard({ applications, onMove, onDelete }) {
                       </option>
                     ))}
                   </select>
-                  <button
-                    onClick={() => onDelete(app.id)}
-                    className="mt-2 text-sm text-red-600 hover:underline"
-                  >
-                    Delete
-                  </button>
+                  <div className="mt-2 flex gap-3 text-sm">
+                    <button
+                      onClick={() => onEdit(app)}
+                      className="text-blue-600 hover:underline"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => onDelete(app.id)}
+                      className="text-red-600 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

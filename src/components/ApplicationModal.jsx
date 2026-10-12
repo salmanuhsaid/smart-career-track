@@ -11,6 +11,7 @@ function ApplicationModal({ t, initial, onSave, onClose }) {
     status: "Saved",
     salary: "",
     notes: "",
+    followUp: "",
     ...initial,
   });
 
@@ -88,6 +89,16 @@ function ApplicationModal({ t, initial, onSave, onClose }) {
             />
           </label>
         </div>
+
+        <label className="mb-3 block text-sm font-medium">
+          {t.followUp}
+          <input
+            type="date"
+            className={inputClass}
+            value={form.followUp}
+            onChange={(e) => update("followUp", e.target.value)}
+          />
+        </label>
 
         <label className="mb-4 block text-sm font-medium">
           {t.notes}

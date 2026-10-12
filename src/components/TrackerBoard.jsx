@@ -1,13 +1,8 @@
 const STATUSES = ["Saved", "Applied", "Interviewing", "Offer", "Rejected"];
 
-function TrackerBoard({ applications, onMove, onDelete, onEdit }) {
+function TrackerBoard({ t, applications, onMove, onDelete, onEdit }) {
   if (applications.length === 0) {
-    return (
-      <p className="text-gray-500">
-        No applications yet. Save a job from the Job Search tab or click "+ Add
-        application".
-      </p>
-    );
+    return <p className="text-gray-500">{t.noApps}</p>;
   }
 
   return (
@@ -17,7 +12,7 @@ function TrackerBoard({ applications, onMove, onDelete, onEdit }) {
         return (
           <div key={status} className="rounded-lg bg-gray-100 p-3">
             <h2 className="mb-3 font-semibold text-gray-700">
-              {status} ({items.length})
+              {t.statuses[status]} ({items.length})
             </h2>
             <div className="flex flex-col gap-3">
               {items.map((app) => (
@@ -44,7 +39,7 @@ function TrackerBoard({ applications, onMove, onDelete, onEdit }) {
                   >
                     {STATUSES.map((s) => (
                       <option key={s} value={s}>
-                        {s}
+                        {t.statuses[s]}
                       </option>
                     ))}
                   </select>
@@ -53,13 +48,13 @@ function TrackerBoard({ applications, onMove, onDelete, onEdit }) {
                       onClick={() => onEdit(app)}
                       className="text-blue-600 hover:underline"
                     >
-                      Edit
+                      {t.edit}
                     </button>
                     <button
                       onClick={() => onDelete(app.id)}
                       className="text-red-600 hover:underline"
                     >
-                      Delete
+                      {t.delete}
                     </button>
                   </div>
                 </div>

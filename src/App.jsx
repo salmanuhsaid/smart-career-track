@@ -1,14 +1,17 @@
 import { useState } from "react";
 import useLocalStorage from "./hooks/useLocalStorage";
+import { translations } from "./translations";
 import JobSearch from "./components/JobSearch";
 import TrackerBoard from "./components/TrackerBoard";
 import ApplicationModal from "./components/ApplicationModal";
 import Stats from "./components/Stats";
 
 function App() {
+  const [lang, setLang] = useLocalStorage("lang", "tr");
+  const t = translations[lang];
   const [tab, setTab] = useState("search");
   const [applications, setApplications] = useLocalStorage("applications", []);
-  const [modal, setModal] = useState(null); // null = closed, {} = add, app = edit
+  const [modal, setModal] = useState(null);
 
   function saveJob(job) {
     if (applications.some((a) => a.id === job.id)) return;
@@ -26,12 +29,10 @@ function App() {
 
   function saveForm(form) {
     if (form.id) {
-      // editing an existing application
       setApplications(
         applications.map((a) => (a.id === form.id ? { ...a, ...form } : a)),
       );
     } else {
-      // adding a new manual application
       setApplications([
         ...applications,
         {
@@ -52,7 +53,7 @@ function App() {
   }
 
   function deleteApplication(id) {
-    if (window.confirm("Delete this application? This cannot be undone.")) {
+    if (window.confirm(t.confirmDelete)) {
       setApplications(applications.filter((a) => a.id !== id));
     }
   }
@@ -64,12 +65,25 @@ function App() {
         : "text-gray-500"
     }`;
 
+  const langClass = (code) =>
+    `rounded px-2 py-1 text-sm font-semibold ${
+      lang === code ? "bg-white text-blue-600" : "text-white hover:bg-blue-500"
+    }`;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-blue-600 p-4 text-white">
-        <h1 className="mx-auto max-w-6xl text-2xl font-bold">
-          Smart Career Track
-        </h1>
+        <div className="mx-auto flex max-w-6xl items-center justify-between">
+          <h1 className="text-2xl font-bold">{t.appTitle}</h1>
+          <div className="flex gap-1">
+            <button className={langClass("tr")} onClick={() => setLang("tr")}>
+              TR
+            </button>
+            <button className={langClass("en")} onClick={() => setLang("en")}>
+              EN
+            </button>
+          </div>
+        </div>
       </header>
       <main className="mx-auto max-w-6xl p-4">
         <div className="mb-4 flex items-center justify-between border-b border-gray-200">
@@ -78,25 +92,26 @@ function App() {
               className={tabClass("search")}
               onClick={() => setTab("search")}
             >
-              Job Search
+              {t.tabSearch}
             </button>
             <button
               className={tabClass("tracker")}
               onClick={() => setTab("tracker")}
             >
-              My Tracker ({applications.length})
+              {t.tabTracker} ({applications.length})
             </button>
           </div>
           <button
             onClick={() => setModal({})}
             className="mb-1 rounded bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700"
           >
-            + Add application
+            {t.addApplication}
           </button>
         </div>
 
         <div className={tab === "search" ? "" : "hidden"}>
           <JobSearch
+            t={t}
             onSave={saveJob}
             savedIds={applications.map((a) => a.id)}
           />
@@ -104,8 +119,9 @@ function App() {
 
         {tab === "tracker" && (
           <>
-            <Stats applications={applications} />
+            <Stats t={t} applications={applications} />
             <TrackerBoard
+              t={t}
               applications={applications}
               onMove={moveApplication}
               onDelete={deleteApplication}
@@ -117,6 +133,7 @@ function App() {
 
       {modal && (
         <ApplicationModal
+          t={t}
           initial={modal}
           onSave={saveForm}
           onClose={() => setModal(null)}

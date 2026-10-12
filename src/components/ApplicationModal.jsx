@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const STATUSES = ["Saved", "Applied", "Interviewing", "Offer", "Rejected"];
 
-function ApplicationModal({ initial, onSave, onClose }) {
+function ApplicationModal({ t, initial, onSave, onClose }) {
   const [form, setForm] = useState({
     title: "",
     company: "",
@@ -32,11 +32,11 @@ function ApplicationModal({ initial, onSave, onClose }) {
         className="max-h-full w-full max-w-lg overflow-y-auto rounded-lg bg-white p-6"
       >
         <h2 className="mb-4 text-xl font-bold">
-          {initial?.id ? "Edit application" : "Add application"}
+          {initial?.id ? t.editTitle : t.addTitle}
         </h2>
 
         <label className="mb-3 block text-sm font-medium">
-          Job title *
+          {t.jobTitle}
           <input
             required
             className={inputClass}
@@ -46,7 +46,7 @@ function ApplicationModal({ initial, onSave, onClose }) {
         </label>
 
         <label className="mb-3 block text-sm font-medium">
-          Company *
+          {t.company}
           <input
             required
             className={inputClass}
@@ -56,7 +56,7 @@ function ApplicationModal({ initial, onSave, onClose }) {
         </label>
 
         <label className="mb-3 block text-sm font-medium">
-          Job link (optional)
+          {t.jobLink}
           <input
             className={inputClass}
             value={form.url}
@@ -66,7 +66,7 @@ function ApplicationModal({ initial, onSave, onClose }) {
 
         <div className="mb-3 grid grid-cols-2 gap-3">
           <label className="block text-sm font-medium">
-            Status
+            {t.status}
             <select
               className={inputClass}
               value={form.status}
@@ -74,13 +74,13 @@ function ApplicationModal({ initial, onSave, onClose }) {
             >
               {STATUSES.map((s) => (
                 <option key={s} value={s}>
-                  {s}
+                  {t.statuses[s]}
                 </option>
               ))}
             </select>
           </label>
           <label className="block text-sm font-medium">
-            Salary
+            {t.salary}
             <input
               className={inputClass}
               value={form.salary}
@@ -90,7 +90,7 @@ function ApplicationModal({ initial, onSave, onClose }) {
         </div>
 
         <label className="mb-4 block text-sm font-medium">
-          Notes (interview date, contact info...)
+          {t.notes}
           <textarea
             rows="4"
             className={inputClass}
@@ -105,13 +105,13 @@ function ApplicationModal({ initial, onSave, onClose }) {
             onClick={onClose}
             className="rounded border border-gray-300 px-4 py-2"
           >
-            Cancel
+            {t.cancel}
           </button>
           <button
             type="submit"
             className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
           >
-            Save
+            {t.save}
           </button>
         </div>
       </form>

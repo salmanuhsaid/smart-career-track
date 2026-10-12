@@ -1,13 +1,28 @@
 import { useState } from "react";
 import { exportApplicationsCsv } from "../utils/exportCsv";
+import { translateToTurkish } from "../utils/translate";
 
 const STATUSES = ["Saved", "Applied", "Interviewing", "Offer", "Rejected"];
 const CLOSED = ["Offer", "Rejected"];
 
-function TrackerBoard({ t, applications, onMove, onDelete, onEdit }) {
+function TrackerBoard({ t, applications, onMove, onUpdate, onDelete, onEdit }) {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [dragOver, setDragOver] = useState(null);
+
+  const [busyId, setBusyId] = useState(null);
+
+  async function handleTranslate(app) {
+    setBusyId(app.id);
+    try {
+      const titleTr = await translateToTurkish(app.title);
+      onUpdate(app.id, { titleTr });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setBusyId(null);
+    }
+  }
 
   if (applications.length === 0) {
     return <p className="text-gray-500">{t.noApps}</p>;
@@ -118,8 +133,23 @@ function TrackerBoard({ t, applications, onMove, onDelete, onEdit }) {
                       onDragEnd={() => setDragOver(null)}
                       className="cursor-grab rounded border bg-white p-3 shadow-sm active:cursor-grabbing"
                     >
-                      <p className="font-medium text-gray-900">{app.title}</p>
+                      <p className="font-medium text-gray-900">
+                        {t.locale === "tr-TR" && app.titleTr
+                          ? app.titleTr
+                          : app.title}
+                      </p>
                       <p className="text-sm text-gray-600">{app.company}</p>
+                      {t.translateBtn &&
+                        !app.titleTr &&
+                        !String(app.id).startsWith("manual-") && (
+                          <button
+                            onClick={() => handleTranslate(app)}
+                            disabled={busyId === app.id}
+                            className="mt-1 text-xs text-gray-600 hover:underline disabled:text-gray-400"
+                          >
+                            {busyId === app.id ? t.translating : t.translateBtn}
+                          </button>
+                        )}
                       {app.salary && (
                         <p className="mt-1 text-xs text-green-700">
                           💰 {app.salary}

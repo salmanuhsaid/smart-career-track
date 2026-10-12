@@ -30,7 +30,15 @@ function App() {
   function saveForm(form) {
     if (form.id) {
       setApplications(
-        applications.map((a) => (a.id === form.id ? { ...a, ...form } : a)),
+        applications.map((a) =>
+          a.id === form.id
+            ? {
+                ...a,
+                ...form,
+                titleTr: a.title === form.title ? form.titleTr : "",
+              }
+            : a,
+        ),
       );
     } else {
       setApplications([
@@ -49,6 +57,12 @@ function App() {
   function moveApplication(id, status) {
     setApplications(
       applications.map((a) => (a.id === id ? { ...a, status } : a)),
+    );
+  }
+
+  function updateApplication(id, fields) {
+    setApplications(
+      applications.map((a) => (a.id === id ? { ...a, ...fields } : a)),
     );
   }
 
@@ -124,6 +138,7 @@ function App() {
               t={t}
               applications={applications}
               onMove={moveApplication}
+              onUpdate={updateApplication}
               onDelete={deleteApplication}
               onEdit={(app) => setModal(app)}
             />

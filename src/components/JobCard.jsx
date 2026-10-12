@@ -1,13 +1,6 @@
 import { useState } from "react";
 
-async function translateToTurkish(text) {
-  const res = await fetch(
-    `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|tr`,
-  );
-  if (!res.ok) throw new Error("Translation failed");
-  const data = await res.json();
-  return data.responseData.translatedText;
-}
+import { translateToTurkish } from "../utils/translate";
 
 function JobCard({ t, job, onSave, isSaved }) {
   const [translated, setTranslated] = useState("");
@@ -64,7 +57,9 @@ function JobCard({ t, job, onSave, isSaved }) {
           {t.apply}
         </a>
         <button
-          onClick={() => onSave(job)}
+          onClick={() =>
+            onSave(translated ? { ...job, titleTr: translated } : job)
+          }
           disabled={isSaved}
           className="rounded border border-blue-600 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-50 disabled:border-gray-300 disabled:text-gray-400"
         >
